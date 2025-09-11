@@ -22,7 +22,7 @@ baseurl                  : "" # the subpath of your site, e.g. "/blog"
 author:
   # Biographic information
   avatar           : "profile.png"
-  name             : "Martina Summ-Kutmon"
+  name             : "Martina Summer-Kutmon"
   bio              : "Network biologist, bioinformatician, systems biologist"
   location         : "Maastricht, NL"
   employer         : "Maastricht University"
