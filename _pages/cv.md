@@ -42,6 +42,7 @@ PhD student supervision
 | Shen Guangya | co-supervisor |  | ongoing |
 | Maria Persson | co-supervisor |  | ongoing |
 | Pierre Klemmer | thesis committee |  | ongoing |
+{: .table}
 
 Research & Publications
 ======
