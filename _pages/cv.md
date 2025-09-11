@@ -43,23 +43,19 @@ PhD student supervision
 | Maria Persson | co-supervisor |  | ongoing |
 | Pierre Klemmer | thesis committee |  | ongoing |
 
-Publications
+Research & Publications
 ======
-  <ul>{% for post in site.publications reversed %}
-    {% include archive-single-cv.html %}
-  {% endfor %}</ul>
-  
-Talks
-======
-  <ul>{% for post in site.talks reversed %}
-    {% include archive-single-talk-cv.html  %}
-  {% endfor %}</ul>
+I focus on network and pathway-based integrative systems biology approaches applied to immunometabolism and chronic diseases. My work emphasizes open science and collaborative research platforms.
+
+**→ [View complete publications list](/publications/)**  
+**→ [Explore research projects](/projects/)**
   
 Teaching
 ======
-  <ul>{% for post in site.teaching reversed %}
-    {% include archive-single-cv.html %}
-  {% endfor %}</ul>
+I am committed to training the next generation of computational biologists through courses, workshops, and direct student supervision.
+
+**→ [See teaching activities](/teaching/)**  
+**→ [View current and graduated students](/students/)**
   
 Service and leadership
 ======
