@@ -16,7 +16,7 @@ import time
 # Configuration
 ORCID_ID = "0000-0002-7699-8191"  # Replace with your ORCID ID
 YOUR_NAME = "Martina Summer-Kutmon"  # Name to bold in publications
-OUTPUT_DIR = "_publications"  # Academic Pages publications directory
+OUTPUT_DIR = "../_publications"  # Academic Pages publications directory
 
 def fetch_orcid_works(orcid_id):
     """Fetch works from ORCID public API."""
