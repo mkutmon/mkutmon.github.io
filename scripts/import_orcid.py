@@ -82,7 +82,7 @@ def create_publication_file(pub_data, output_dir, index):
     year = published['date-parts'][0][0] if published and published.get('date-parts') else datetime.now().year
     
     # Create filename from title
-    filename = re.sub(r'[^\w\s-]', '', title).strip()
+    filename = re.sub(r'[^\w\s-]', '', doi).strip()
     filename = re.sub(r'[-\s]+', '-', filename).lower()
     filename = f"{year}-{filename[:50]}.md"  # Limit length
     
