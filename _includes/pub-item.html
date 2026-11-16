@@ -1,0 +1,8 @@
+{% comment %}
+  One publication in Vancouver style:
+  Surname AB, Surname C, ... (max 5 authors), et al. Title. Journal. Year.
+  Author names come from the ORCID import as "M. G. Pencheva" and are converted to "Pencheva MG".
+{% endcomment %}{% assign p = include.post %}{% assign max_authors = 5 %}{% assign raw = p.citation | split: ". (" | first %}{% assign names = raw | split: ", " %}{% capture authors %}{% for n in names limit: max_authors %}{% assign toks = n | split: " " %}{% assign sur = "" %}{% assign ini = "" %}{% for t in toks %}{% if t contains "." %}{% assign c = t | remove: "." | remove: "-" %}{% assign ini = ini | append: c %}{% elsif sur == "" %}{% assign sur = t %}{% else %}{% assign sur = sur | append: " " | append: t %}{% endif %}{% endfor %}{% assign full = sur | append: " " | append: ini | strip %}{% if sur contains "Kutmon" %}<strong>{{ full }}</strong>{% else %}{{ full }}{% endif %}{% unless forloop.last %}, {% endunless %}{% endfor %}{% if names.size > max_authors %}, et al{% endif %}{% endcapture %}{% assign title_end = p.title | slice: -1 %}
+<li class="pub-item">
+  {{ authors }}. {% if p.paperurl and p.paperurl != "" %}<a href="{{ p.paperurl }}">{{ p.title }}</a>{% else %}{{ p.title }}{% endif %}{% unless title_end == "?" or title_end == "." %}.{% endunless %} <em>{% if p.venue and p.venue != "" %}{{ p.venue }}{% else %}Preprint{% endif %}</em>. {{ p.date | date: "%Y" }}.
+</li>
