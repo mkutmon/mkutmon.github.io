@@ -54,4 +54,19 @@ Maastricht University, Maastricht, The Netherlands<br>
 - Topic Editor, Frontiers in Bioinformatics
 - Reviewer for many different journals including *Nucleic Acids Research*, *Bioinformatics* and *PLOS Computational Biology*
 
+## PhD supervision
+
+| PhD candidate | Role | Thesis | Status |
+|---------------|------|--------|--------|
+| Yagmur Doğay | co-promoter | | ongoing (since 2025) |
+| Maria Persson (University of Oslo) | co-supervisor | | ongoing (since 2024) |
+| Guangya Shen | co-promoter | | ongoing (since 2024) |
+| Aishwarya Iyer | co-promoter | | ongoing (since 2021) |
+| Daan van Beek | co-promoter | [Tracing the path from genetic variants to variation in health and disease: Everything in its right place](https://cris.maastrichtuniversity.nl/en/publications/tracing-the-path-from-genetic-variants-to-variation-in-health-and) | defended 30 Sep 2025 |
+| Chaitra Sarathy | co-promoter | [Genome-scale modelling of human adipocyte metabolism: strategies for multi-omics integration and visualisation](https://doi.org/10.26481/dis.20220704cs) | defended 4 Jul 2022 |
+| Mirella Kalafati | co-promoter | [Investigating insulin resistance in human obesity with transcriptomics: towards precision-based strategies](https://doi.org/10.26481/dis.20211112mk) | defended 12 Nov 2021 |
+| Samar Tareen | co-promoter | [Modelling molecular processes in weight loss: Regulation of metabolic flexibility](https://doi.org/10.26481/dis.20200325st) | defended 30 Apr 2020 |
+| Anwesha Bohler | co-promoter | [Towards the complete picture: combining modelling and experimental data in a systems biology approach](https://doi.org/10.26481/dis.20170216abd) | defended 16 Feb 2017 |
+{: .table}
+
 See also [Research](/research/), [Teaching](/teaching/) and [Publications](/publications/).
