@@ -20,7 +20,7 @@ My research is in **network biology**. I develop network-based approaches to int
 **Current PhD candidates** (co-promoter)
 - **Aishwarya Iyer** (since 2021) – network approaches for rare diseases together with Friederike Ehrhart (TGX)
 - **Guangya Shen** (since 2024) – NUTRIOME (together with Susan Steinbusch-Coort, TGX)
-- **Yagmur Gogay** (since 2025) – kidney map and AI-supported curation together with Aurelie Carlier
+- **Yağmur Doğay** (since 2025) – kidney map and AI-supported curation together with Aurélie Carlier
 - **Maria Persson** (since 2024, University of Oslo) – NUTRIOME
 
 **Former PhD candidates** (co-promoter)
