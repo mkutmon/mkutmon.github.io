@@ -5,29 +5,37 @@ permalink: /publications/
 author_profile: true
 ---
 
-{% if site.author.googlescholar %}
-  <div class="wordwrap">You can also find my articles on <a href="{{site.author.googlescholar}}">my Google Scholar profile</a>.</div>
-{% endif %}
-
 {% include base_path %}
 
-<!-- New style rendering if publication categories are defined -->
-{% if site.publication_category %}
-  {% for category in site.publication_category  %}
-    {% assign title_shown = false %}
-    {% for post in site.publications reversed %}
-      {% if post.category != category[0] %}
-        {% continue %}
-      {% endif %}
-      {% unless title_shown %}
-        <h2>{{ category[1].title }}</h2><hr />
-        {% assign title_shown = true %}
-      {% endunless %}
-      {% include archive-single.html %}
-    {% endfor %}
+<style>
+  .pub-links { margin: 0 0 1.5em; font-size: 0.9em; }
+  .pub-year { margin-top: 1.5em; padding-bottom: 0.2em; border-bottom: 1px solid #e5e5e5; }
+  .pub-list { list-style: none; margin: 0; padding: 0; }
+  .pub-item { margin: 0 0 0.8em; line-height: 1.45; font-size: 0.95em; }
+</style>
+
+<p class="pub-links">
+  Full and up-to-date lists:
+  <a href="{{ site.author.googlescholar }}">Google Scholar</a> ·
+  <a href="{{ site.author.orcid }}">ORCID</a> ·
+  <a href="{{ site.author.pubmed }}">PubMed</a>
+</p>
+
+{% if site.data.selected_publications and site.data.selected_publications.size > 0 %}
+<h2 class="pub-year">Selected publications</h2>
+<ul class="pub-list">
+  {% for doi in site.data.selected_publications %}
+    {% assign doi_url = "https://doi.org/" | append: doi %}
+    {% assign post = site.publications | where: "paperurl", doi_url | first %}
+    {% if post %}{% include pub-item.html post=post %}{% endif %}
   {% endfor %}
-{% else %}
-  {% for post in site.publications reversed %}
-    {% include archive-single.html %}
-  {% endfor %}
+</ul>
 {% endif %}
+
+{% assign by_year = site.publications | sort: "date" | reverse | group_by_exp: "p", "p.date | date: '%Y'" %}
+{% for year in by_year %}
+<h2 class="pub-year">{{ year.name }}</h2>
+<ul class="pub-list">
+  {% for post in year.items %}{% include pub-item.html post=post %}{% endfor %}
+</ul>
+{% endfor %}
