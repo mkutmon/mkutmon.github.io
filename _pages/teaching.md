@@ -9,7 +9,6 @@ Half of my position is dedicated to education. I have taught at Maastricht Unive
 
 ## Programme roles – MSc Systems Biology and Bioinformatics
 
-- Programme coordinator
 - Chair, Board of Admissions
 - Member, Educational Programme Committee
 
