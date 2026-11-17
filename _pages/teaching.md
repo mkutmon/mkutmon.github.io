@@ -27,7 +27,7 @@ Half of my position is dedicated to education. I have taught at Maastricht Unive
 | MSc Biomedical Sciences | MBS1002 – Biomedical Approaches | Lecturer |
 | | MBS1401 – Science and Technology of Regenerative Medicine | Practical instructor |
 
-I also teach in international postgraduate courses, such as the Wellcome Trust Computational Systems Biology course (Cambridge, UK).
+I also teach in international postgraduate courses, such as different BioSB courses or the Wellcome Trust Computational Systems Biology course (Cambridge, UK).
 
 ## Supervision
 
