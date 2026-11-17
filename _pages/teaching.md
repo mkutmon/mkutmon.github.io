@@ -54,7 +54,7 @@ author_profile: true
   <div class="t-card"><span class="code">NEU3003</span><span class="name">Brain-Body Interactions</span><span class="role">Lecturer</span><span class="prog">Maastricht Science Programme</span></div>
 </div>
 
-<h2><i class="fas fa-fw fa-globe-europe" aria-hidden="true"></i> International teaching</h2>
+<h2><i class="fas fa-fw fa-globe-europe" aria-hidden="true"></i> Postgraduate teaching</h2>
 <p>Invited teacher in (inter)national postgraduate courses, such as different BioSB courses or the Wellcome Trust Computational Systems Biology course (Cambridge, UK).</p>
 
 <h2><i class="fas fa-fw fa-user-graduate" aria-hidden="true"></i> Supervision</h2>
