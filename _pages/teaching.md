@@ -6,17 +6,17 @@ author_profile: true
 ---
 
 <style>
-  .t-quote { margin: 0.5em 0 1.8em; padding: 0.9em 1.2em; border-left: 4px solid #52adc8; background: #f5fafc; font-size: 1.05em; font-style: italic; }
+  .t-quote { margin: 0.5em 0 1.8em; padding: 0.9em 1.2em; border-left: 4px solid var(--global-link-color); background: #f1f7f4; font-size: 1.05em; font-style: italic; }
   .t-stats { display: flex; flex-wrap: wrap; gap: 0.8em; margin: 0 0 1.8em; }
   .t-stat { flex: 1 1 120px; text-align: center; padding: 0.8em 0.5em; border: 1px solid #e5e5e5; border-radius: 6px; }
-  .t-stat b { display: block; font-size: 1.6em; color: #52adc8; line-height: 1.2; }
+  .t-stat b { display: block; font-size: 1.6em; color: var(--global-link-color); line-height: 1.2; }
   .t-stat span { font-size: 0.8em; color: #666; }
   .t-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.8em; margin: 0.6em 0 1.8em; }
   .t-card { padding: 0.8em 1em; border: 1px solid #e5e5e5; border-radius: 6px; font-size: 0.9em; }
   .t-card .code { font-size: 0.75em; color: #888; letter-spacing: 0.03em; }
   .t-card .name { font-weight: 600; display: block; margin: 0.15em 0 0.3em; }
-  .t-card .role { display: inline-block; font-size: 0.75em; padding: 0.1em 0.5em; border-radius: 10px; background: #eef6f9; color: #2f7f97; }
-  .t-card .role.coord { background: #52adc8; color: #fff; }
+  .t-card .role { display: inline-block; font-size: 0.75em; padding: 0.1em 0.5em; border-radius: 10px; background: #e6f2ec; color: #2d6a4f; }
+  .t-card .role.coord { background: var(--global-link-color); color: #fff; }
   .t-card .prog { display: block; font-size: 0.75em; color: #888; margin-top: 0.4em; }
 </style>
 
