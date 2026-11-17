@@ -1,177 +1,170 @@
 #!/usr/bin/env python3
 """
-Import publications from ORCID to Academic Pages format.
-Requires: requests, python-dateutil
-Install with: pip install requests python-dateutil
+Import publications from ORCID into the Academic Pages _publications folder.
+
+- Uses the official ORCID public API (pub.orcid.org) to list all works with a DOI.
+- Fetches metadata for each DOI from CrossRef.
+- Rebuilds _publications from scratch on every run (old files are removed only
+  after ORCID has been read successfully), so the folder always mirrors ORCID.
+
+Requires: requests  (pip install requests)
 """
 
-import requests
 import json
 import os
 import re
-from datetime import datetime
-from urllib.parse import quote
+import sys
 import time
+from urllib.parse import quote
+
+import requests
 
 # Configuration
-ORCID_ID = "0000-0002-7699-8191"  # Replace with your ORCID ID
-YOUR_NAME = "Martina Summer-Kutmon"  # Name to bold in publications
-OUTPUT_DIR = "../_publications"  # Academic Pages publications directory
+ORCID_ID = "0000-0002-7699-8191"
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "_publications")
+CONTACT = "martina.kutmon@maastrichtuniversity.nl"  # sent to CrossRef as polite-pool contact
+HEADERS = {"User-Agent": f"mkutmon.github.io publication import (mailto:{CONTACT})"}
 
-def fetch_orcid_works(orcid_id):
-    """Fetch works from ORCID public API."""
-    url = f"https://orcid.org/{orcid_id}/worksPage.json"
-    params = {
-        'offset': 0,
-        'sort': 'date',
-        'sortAsc': 'false'
-    }
-    headers = {
-        'Accept': 'application/json',
-        'Referer': f'https://orcid.org/{orcid_id}'
-    }
-    
-    response = requests.get(url, params=params, headers=headers)
-    response.raise_for_status()
-    return response.json()
 
-def get_doi_from_group(group):
-    """Extract DOI from ORCID work group."""
-    external_ids = group.get('externalIdentifiers', [])
-    for ext_id in external_ids:
-        if (ext_id.get('externalIdentifierType', {}).get('value') == 'doi' and
-            ext_id.get('relationship', {}).get('value') == 'self'):
-            return ext_id.get('externalIdentifierId', {}).get('value')
+def yaml_str(value):
+    """Return a YAML-safe double-quoted string (JSON strings are valid YAML)."""
+    return json.dumps(value or "", ensure_ascii=False)
+
+
+def fetch_orcid_dois(orcid_id):
+    """Return a list of unique DOIs (lower-case) from the ORCID record."""
+    url = f"https://pub.orcid.org/v3.0/{orcid_id}/works"
+    r = requests.get(url, headers={**HEADERS, "Accept": "application/json"}, timeout=60)
+    r.raise_for_status()
+    dois = []
+    for group in r.json().get("group", []):
+        doi = None
+        for ext in group.get("external-ids", {}).get("external-id", []):
+            if ext.get("external-id-type") == "doi":
+                doi = ext.get("external-id-value") or ext.get("external-id-normalized", {}).get("value")
+                if ext.get("external-id-relationship") == "self":
+                    break
+        if doi:
+            doi = re.sub(r"^https?://(dx\.)?doi\.org/", "", doi.strip(), flags=re.I).lower()
+            if doi not in dois:
+                dois.append(doi)
+    return dois
+
+
+def fetch_crossref(doi):
+    r = requests.get(f"https://api.crossref.org/works/{quote(doi)}", headers=HEADERS, timeout=60)
+    r.raise_for_status()
+    return r.json()["message"]
+
+
+def clean(text):
+    """Strip HTML/JATS tags and collapse whitespace."""
+    text = re.sub(r"<[^>]+>", "", text or "")
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def get_year(msg):
+    for key in ("published-print", "published-online", "issued", "posted", "created"):
+        parts = msg.get(key, {}).get("date-parts", [[None]])
+        if parts and parts[0] and parts[0][0]:
+            return int(parts[0][0])
     return None
 
-def fetch_crossref_data(doi):
-    """Fetch publication data from CrossRef API."""
-    url = f"https://api.crossref.org/v1/works/{quote(doi)}"
-    response = requests.get(url)
-    response.raise_for_status()
-    return response.json()['message']
 
-def format_authors(authors, your_name):
-    """Format author list, bolding your name."""
-    formatted_authors = []
-    for author in authors:
-        given = author.get('given', '')
-        family = author.get('family', '')
-        
-        # Abbreviate given names
-        given_abbrev = ' '.join([name[0] + '.' for name in given.split() if name])
-        full_name = f"{given_abbrev} {family}".strip()
-        
-        # Bold your name
-        if your_name.lower() in full_name.lower():
-            full_name = f"**{full_name}**"
-            
-        formatted_authors.append(full_name)
-    
-    return ', '.join(formatted_authors)
+def get_venue(msg):
+    venue = (msg.get("container-title") or [""])[0]
+    if not venue and msg.get("type") == "posted-content":
+        inst = msg.get("institution") or []
+        venue = inst[0].get("name", "") if inst else ""
+        venue = venue or msg.get("publisher", "") or "Preprint"
+    return clean(venue)
 
-def create_publication_file(pub_data, output_dir, index):
-    """Create Academic Pages publication markdown file."""
-    title = pub_data.get('title', ['Untitled'])[0] if pub_data.get('title') else 'Untitled'
-    authors = pub_data.get('author', [])
-    journal = pub_data.get('container-title', [''])[0] if pub_data.get('container-title') else ''
-    doi = pub_data.get('DOI', '')
-    
-    # Extract year from published date
-    published = pub_data.get('published-print') or pub_data.get('published-online')
-    year = published['date-parts'][0][0] if published and published.get('date-parts') else datetime.now().year
-    
-    # Create filename from title
-    filename = re.sub(r'[^\w\s-]', '', doi).strip()
-    filename = re.sub(r'[-\s]+', '-', filename).lower()
-    filename = f"{year}-{filename[:50]}.md"  # Limit length
-    
-    # Format authors
-    author_string = format_authors(authors, YOUR_NAME)
-    
-    # Create markdown content
-    content = f"""---
-title: "{title}"
-collection: publications
-category: manuscripts
-permalink: /publication/{filename[:-3]}
-excerpt: ''
-date: {year}-01-01
-venue: '{journal}'
-slidesurl: ''
-paperurl: 'https://doi.org/{doi}'
-citation: '{author_string}. ({year}). &quot;{title}.&quot; <i>{journal}</i>.'
----
 
-{author_string}. ({year}). "{title}." *{journal}*.
+def format_authors(authors):
+    names = []
+    for a in authors:
+        family = clean(a.get("family", ""))
+        given = clean(a.get("given", ""))
+        if not family:
+            name = clean(a.get("name", ""))  # consortium / group authors
+            if name:
+                names.append(name)
+            continue
+        initials = " ".join(p[0] + "." for p in re.split(r"[\s-]+", given) if p)
+        names.append(f"{initials} {family}".strip())
+    return ", ".join(names)
 
-[Download paper](https://doi.org/{doi})
-"""
 
-    # Ensure output directory exists
-    os.makedirs(output_dir, exist_ok=True)
-    
-    # Write file
-    filepath = os.path.join(output_dir, filename)
-    with open(filepath, 'w', encoding='utf-8') as f:
+def write_publication(msg, doi):
+    title = clean((msg.get("title") or ["Untitled"])[0])
+    year = get_year(msg) or 1900
+    venue = get_venue(msg)
+    authors = format_authors(msg.get("author", []))
+    category = "preprints" if msg.get("type") == "posted-content" else "manuscripts"
+    slug = re.sub(r"[^a-z0-9]+", "-", doi.lower()).strip("-")[:60]
+    filename = f"{year}-{slug}.md"
+    paperurl = f"https://doi.org/{doi}"
+    citation = f'{authors}. ({year}). "{title}." <i>{venue}</i>.'
+
+    content = "\n".join([
+        "---",
+        f"title: {yaml_str(title)}",
+        "collection: publications",
+        f"category: {category}",
+        f"permalink: /publication/{filename[:-3]}",
+        "excerpt: ''",
+        f"date: {year}-01-01",
+        f"venue: {yaml_str(venue)}",
+        f"paperurl: {yaml_str(paperurl)}",
+        f"citation: {yaml_str(citation)}",
+        "---",
+        "",
+        f'{authors}. ({year}). "{title}." *{venue}*.',
+        "",
+        f"[Paper]({paperurl})",
+        "",
+    ])
+    with open(os.path.join(OUTPUT_DIR, filename), "w", encoding="utf-8") as f:
         f.write(content)
-    
-    print(f"Created: {filepath}")
+    return filename
+
 
 def main():
-    print(f"Fetching publications for ORCID ID: {ORCID_ID}")
-    
-    # Fetch works from ORCID
+    print(f"Fetching works for ORCID {ORCID_ID}")
     try:
-        works_data = fetch_orcid_works(ORCID_ID)
+        dois = fetch_orcid_dois(ORCID_ID)
     except requests.RequestException as e:
-        print(f"Error fetching ORCID data: {e}")
-        return
-    
-    groups = works_data.get('groups', [])
-    
-    if not groups:
-        print("No publications found in ORCID record")
-        return
-        
-    print(f"Found {len(groups)} publication groups")
-    
-    successful_imports = 0
-    
-    for i, group in enumerate(groups):
-        doi = get_doi_from_group(group)
-        if not doi:
-            print(f"Skipping group {i+1}: No DOI found")
-            continue
-        
-        print(f"Processing {i+1}/{len(groups)}: {doi}")
-        
+        print(f"ERROR: could not read ORCID ({e}); leaving existing publications untouched.")
+        sys.exit(1)
+    if not dois:
+        print("ERROR: ORCID returned no DOIs; leaving existing publications untouched.")
+        sys.exit(1)
+    print(f"Found {len(dois)} works with a DOI")
+
+    records = []
+    for i, doi in enumerate(dois, 1):
         try:
-            # Fetch detailed data from CrossRef
-            pub_data = fetch_crossref_data(doi)
-            
-            # Create publication file
-            create_publication_file(pub_data, OUTPUT_DIR, i+1)
-            successful_imports += 1
-            
-            # Be nice to APIs - rate limiting
-            time.sleep(1)  # Increased to 1 second
-            
+            records.append((doi, fetch_crossref(doi)))
+            print(f"[{i}/{len(dois)}] OK   {doi}")
         except requests.RequestException as e:
-            print(f"Error fetching CrossRef data for {doi}: {e}")
-            continue
-        except Exception as e:
-            print(f"Error processing {doi}: {e}")
-            continue
-    
-    print(f"\nImport complete!")
-    print(f"Successfully imported: {successful_imports}/{len(groups)} publications")
-    print(f"Check the {OUTPUT_DIR} directory for new files.")
+            print(f"[{i}/{len(dois)}] SKIP {doi} ({e})")
+        time.sleep(0.5)
+
+    if not records:
+        print("ERROR: no CrossRef records retrieved; leaving existing publications untouched.")
+        sys.exit(1)
+
+    # Rebuild the folder from scratch only now that we have data.
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    for name in os.listdir(OUTPUT_DIR):
+        if name.endswith(".md"):
+            os.remove(os.path.join(OUTPUT_DIR, name))
+
+    written = set()
+    for doi, msg in records:
+        written.add(write_publication(msg, doi))
+    print(f"Done: wrote {len(written)} publications to {os.path.abspath(OUTPUT_DIR)}")
+
 
 if __name__ == "__main__":
-    # Update configuration
-    if ORCID_ID == "0000-0000-0000-0000":
-        print("Please update ORCID_ID and YOUR_NAME in the script configuration!")
-        exit(1)
-    
     main()
