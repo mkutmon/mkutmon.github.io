@@ -57,5 +57,6 @@ author_profile: true
 <h2><i class="fas fa-fw fa-globe-europe" aria-hidden="true"></i> Postgraduate teaching</h2>
 <p>Invited teacher in (inter)national postgraduate courses, such as different BioSB courses or the Wellcome Trust Computational Systems Biology course (Cambridge, UK).</p>
 
-<h2><i class="fas fa-fw fa-user-graduate" aria-hidden="true"></i> Supervision</h2>
-<p>I have supervised more than 50 bachelor and master thesis students across FSE and FHML programmes. Interested in a thesis project in network biology? <a href="mailto:martina.kutmon@maastrichtuniversity.nl">Get in touch</a>.</p>
+<h2><i class="fas fa-fw fa-user-graduate" aria-hidden="true"></i> Supervision and mentoring</h2>
+<p>I have supervised more than 50 bachelor and master thesis students across FSE and FHML programmes. I am also a long-term mentor for bachelor students in Biomedical Sciences, supporting them in their academic development and study choices throughout the programme.</p>
+<p>Interested in a thesis project in network biology? <a href="mailto:martina.kutmon@maastrichtuniversity.nl">Get in touch</a>.</p>
