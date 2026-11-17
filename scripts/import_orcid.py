@@ -23,6 +23,7 @@ import requests
 ORCID_ID = "0000-0002-7699-8191"
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "_publications")
 CONTACT = "martina.kutmon@maastrichtuniversity.nl"  # sent to CrossRef as polite-pool contact
+PARTICLES = {"van", "von", "der", "den", "de", "del", "della", "di", "da", "du", "le", "la", "ter", "ten", "op", "het", "'t"}
 HEADERS = {"User-Agent": f"mkutmon.github.io publication import (mailto:{CONTACT})"}
 
 
@@ -32,11 +33,11 @@ def yaml_str(value):
 
 
 def fetch_orcid_dois(orcid_id):
-    """Return a list of unique DOIs (lower-case) from the ORCID record."""
+    """Return a list of (doi, put_code) for unique DOIs (lower-case) in the ORCID record."""
     url = f"https://pub.orcid.org/v3.0/{orcid_id}/works"
     r = requests.get(url, headers={**HEADERS, "Accept": "application/json"}, timeout=60)
     r.raise_for_status()
-    dois = []
+    dois, seen = [], set()
     for group in r.json().get("group", []):
         doi = None
         for ext in group.get("external-ids", {}).get("external-id", []):
@@ -46,9 +47,35 @@ def fetch_orcid_dois(orcid_id):
                     break
         if doi:
             doi = re.sub(r"^https?://(dx\.)?doi\.org/", "", doi.strip(), flags=re.I).lower()
-            if doi not in dois:
-                dois.append(doi)
+            if doi not in seen:
+                seen.add(doi)
+                summaries = group.get("work-summary") or [{}]
+                dois.append((doi, summaries[0].get("put-code")))
     return dois
+
+
+def fetch_orcid_contributors(orcid_id, put_code):
+    """Fallback author list from the ORCID work record, as CrossRef-style dicts."""
+    if not put_code:
+        return []
+    url = f"https://pub.orcid.org/v3.0/{orcid_id}/work/{put_code}"
+    r = requests.get(url, headers={**HEADERS, "Accept": "application/json"}, timeout=60)
+    r.raise_for_status()
+    authors = []
+    for c in (r.json().get("contributors") or {}).get("contributor", []):
+        name = clean(((c.get("credit-name") or {}).get("value")) or "")
+        if not name:
+            continue
+        if "," in name:  # "Family, Given"
+            family, given = [x.strip() for x in name.split(",", 1)]
+        else:            # "Given Middle Family" (keeps particles like "van der" with the family name)
+            parts = name.split()
+            cut = len(parts) - 1
+            while cut > 1 and parts[cut - 1].lower() in PARTICLES:
+                cut -= 1
+            given, family = " ".join(parts[:cut]), " ".join(parts[cut:])
+        authors.append({"given": given, "family": family})
+    return authors
 
 
 def fetch_crossref(doi):
@@ -142,9 +169,16 @@ def main():
     print(f"Found {len(dois)} works with a DOI")
 
     records = []
-    for i, doi in enumerate(dois, 1):
+    for i, (doi, put_code) in enumerate(dois, 1):
         try:
-            records.append((doi, fetch_crossref(doi)))
+            msg = fetch_crossref(doi)
+            if not msg.get("author"):
+                try:
+                    msg["author"] = fetch_orcid_contributors(ORCID_ID, put_code)
+                    print(f"[{i}/{len(dois)}] note {doi}: no CrossRef authors, used ORCID ({len(msg['author'])})")
+                except requests.RequestException as e:
+                    print(f"[{i}/{len(dois)}] note {doi}: no authors in CrossRef or ORCID ({e})")
+            records.append((doi, msg))
             print(f"[{i}/{len(dois)}] OK   {doi}")
         except requests.RequestException as e:
             print(f"[{i}/{len(dois)}] SKIP {doi} ({e})")
