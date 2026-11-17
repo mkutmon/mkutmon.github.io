@@ -21,7 +21,7 @@ baseurl                  : "" # the subpath of your site, e.g. "/blog"
 #               Additional customization can be done by editing /_includes/author-profile.html
 author:
   # Biographic information
-  avatar           : "profile-mkutmon.jpg"
+  avatar           : "https://github.com/mkutmon.png"
   name             : "Martina Summer-Kutmon"
   bio              : "Network biologist, bioinformatician, systems biologist"
   location         : "Maastricht, NL"
