@@ -32,7 +32,7 @@ author_profile: true
 </div>
 
 <h2><i class="fas fa-fw fa-sitemap" aria-hidden="true"></i> Programme roles</h2>
-<p>MSc Systems Biology and Bioinformatics: <strong>programme coordinator</strong> · chair, Board of Admissions · member, Educational Programme Committee</p>
+<p>MSc Systems Biology and Bioinformatics: chair, Board of Admissions · member, Educational Programme Committee</p>
 
 <h2><i class="fas fa-fw fa-chalkboard-teacher" aria-hidden="true"></i> Courses</h2>
 
