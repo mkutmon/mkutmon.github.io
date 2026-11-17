@@ -41,6 +41,8 @@ redirect_from:
   <div class="r-card"><span class="name">Network approaches for rare diseases</span><span class="desc">Network-based methods to study rare diseases.</span></div>
 </div>
 
+<hr/> 
+
 <h2><i class="fas fa-fw fa-project-diagram" aria-hidden="true"></i> Larger initiatives</h2>
 <div class="r-grid">
   <div class="r-card r-init"><i class="fas fa-fw fa-database" aria-hidden="true"></i><span><span class="name"><a href="https://www.wikipathways.org">WikiPathways</a></span><span class="desc">Open, community-curated pathway database</span></span></div>
@@ -50,7 +52,7 @@ redirect_from:
   <div class="r-card r-init"><i class="fas fa-fw fa-users-cog" aria-hidden="true"></i><span><span class="name"><a href="https://www.iscb.org">ISCB</a> NetBio COSI</span><span class="desc">Co-organiser of the Network Biology track at ISMB</span></span></div>
 </div>
 
-<p>For publications, see <a href="/publications/">Publications</a> or <a href="https://scholar.google.nl/citations?user=w8Y7oXAAAAAJ">Google Scholar</a>.</p>
+<hr/> 
 
 <h2><i class="fas fa-fw fa-users" aria-hidden="true"></i> Team</h2>
 
