@@ -32,9 +32,9 @@ redirect_from:
 
 <p>I develop computational approaches that integrate diverse types of data – from multi-omics to clinical and imaging data – across biological scales, from molecular interactions to physiological systems and the whole body. Biological pathways, networks and disease maps form the backbone of this work, providing a structured way to connect heterogeneous data and to interpret it in the context of disease mechanisms.</p>
 
-<p>I apply these approaches to complex, multi-system conditions:</p>
+<p>I apply these approaches to diverse complex, multi-system conditions like </p>
 <div class="a-tags">
-  <span class="a-tag">post-COVID</span><span class="a-tag">inflammatory skin diseases</span><span class="a-tag">pancreatic cancer</span>
+  <span class="a-tag">post-COVID</span><span class="a-tag">inflammatory skin diseases</span><span class="a-tag">pancreatic cancer</span><span class="a-tag">diet intervention studies</span><span class="a-tag">rare diseases</span><span class="a-tag">kidney function</span><span class="a-tag">cardiovascular disease</span><span class="a-tag">immune memory and vaccination</span>
 </div>
 
 <h2><i class="fas fa-fw fa-compass" aria-hidden="true"></i> What I work on</h2>
