@@ -26,7 +26,7 @@ author_profile: true
 
 <div class="t-stats">
   <div class="t-stat"><b>2011</b><span>teaching at UM since</span></div>
-  <div class="t-stat"><b>10</b><span>courses</span></div>
+  <div class="t-stat"><b>10</b><span>active courses</span></div>
   <div class="t-stat"><b>6</b><span>programmes</span></div>
   <div class="t-stat"><b>50+</b><span>thesis students supervised</span></div>
 </div>
